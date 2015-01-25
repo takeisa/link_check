@@ -63,7 +63,8 @@ USER_AGENT = {
 
 options = {
   user_agent: USER_AGENT[DEFAULT_USER_AGENT],
-  interval:   1
+  interval:   1,
+  check: true
 }
 
 @option_parser = OptionParser.new do |opts|
@@ -79,6 +80,10 @@ Usage: ruby #{exec_name} [options] url...
 
   opts.on("-i sec", "--interval", "Set request interval [sec] (default 1sec) ") do |interval|
     options[:interval] = interval.to_i
+  end
+
+  opts.on("-n", "--not-check", "Not url check") do
+    options[:check] = false
   end
 
   opts.on("", "--show-user-agent", "Show support user-agent") do |interval|
@@ -120,6 +125,8 @@ page, code = get_page_and_code(agent, url)
 
 mark = code == "200" ? "" : "*"
 
+puts "Error\tStatus\tCount\tURL"
+
 puts "#{mark}\t#{code}\troot\t#{url}"
 
 if code != "200"
@@ -141,7 +148,7 @@ uniq_link_items.each do |item|
   url = item[0]
   count = item[1]
 
-  if url =~ /^\// || url =~ %r[^https?://#{authority}/]
+  if options[:check] && (url =~ /^\// || url =~ %r[^https?://#{authority}/])
     page, code = get_page_and_code(agent, url)
     mark = code == "200" ? "" : "*"
     print "#{mark}\t#{code}\t"
@@ -151,5 +158,5 @@ uniq_link_items.each do |item|
 
   puts "#{count}\t#{url}"
 
-  sleep options[:interval]
+  sleep options[:interval] if options[:check]
 end
