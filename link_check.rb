@@ -76,13 +76,16 @@ Usage: ruby #{exec_name} [options] url...
   opts.on("-u", "--user-agent", "Set User-agent (default: #{DEFAULT_USER_AGENT})") do |user_agent|
     options[:user_agent] = USER_AGENT[user_agent]
   end
+
   opts.on("-i sec", "--interval", "Set request interval [sec] (default 1sec) ") do |interval|
     options[:interval] = interval.to_i
   end
-  opts.on("", "--list-user-agent", "Show support user-agent") do |interval|
+
+  opts.on("", "--show-user-agent", "Show support user-agent") do |interval|
     show_user_agent(USER_AGENT)
     exit 1
   end
+
   opts.on("-h", "--help", "Show help") do
     usage
     exit 1
